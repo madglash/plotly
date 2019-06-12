@@ -16,81 +16,55 @@ function buildMetadata(sample) {
 }
 
 function buildCharts(sample) {
-
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
-
-  const left = names.slice(0, 2); 
-  console.log(left);
-
-  const sample = 1544;
-  
-  // Plot the default route once the page loads
-    var defaultURL = "/samples/<sample>";
+// @TODO: Use `d3.json` to fetch the sample data for the plots
+  var defaultURL = `/samples/${sample}`;
+   
+   // Build Pie Chart
+   d3.json(defaultURL).then(function(response){
+    
     console.log(response);
-    var data = [response];
-
-    // Create the Trace
-     var trace1 = {
-       values: data.sample_values,
-       labels: data.otu_ids,
-       hoverinfo: data.otu_labels,
+    
+    var sample_values = response.sample_values.slice(0,10);
+    var otu_ids = response.otu_ids.slice(0, 10);
+    var otu_labels = response.otu_labels.slice(0, 10);
+           
+    // Create the Trace - then need to create as a dictionary
+     var pie_trace = {
+       values: sample_values,
+       labels: otu_ids,
+       hoverinfo: otu_labels,
        type: "pie"
      };
-    
-     // Create the data array for the plot
-    var data = [trace1];
 
-    var layout = {
-      height: 400,
-      width: 500,
-      margin: { t: 30, b: 100 }
-    };
-
-    d3.json(defaultURL).then(function(data) {
-      var data = [data];
-      var layout = layout;
-      Plotly.plot("pie", data, layout);
-    });
-
-
-
-    /* data route */
-  var url = "/api/pals";
-  d3.json(url).then(function(response) {
-
-    var layout2 = {
-      scope: "usa",
-      title: "Pet Pals",
-      showlegend: false,
-      height: 600,
-            // width: 980,
-      geo: {
-        scope: "usa",
-        projection: {
-          type: "albers usa"
-        },
-        showland: true,
-        landcolor: "rgb(217, 217, 217)",
-        subunitwidth: 1,
-        countrywidth: 1,
-        subunitcolor: "rgb(255,255,255)",
-        countrycolor: "rgb(255,255,255)"
-      }
-    };
-
-    Plotly.newPlot("plot", data, layout2);
-  });
-
-
-
-
+     var pie_data = [pie_trace];
+  
+    Plotly.plot("pie", pie_data);
+    })};
 
     // @TODO: Build a Bubble Chart using the sample data
 
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
-}
+    var bubble_trace = {
+      x: [1, 2, 3, 4],
+      y: [10, 11, 12, 13],
+      mode: 'markers',
+      marker: {
+        size: [40, 60, 80, 100]
+      }
+    };
+    
+    var data = [bubble_trace];
+    
+    var layout = {
+      title: 'Marker Size',
+      showlegend: false,
+      height: 600,
+      width: 600
+    };
+    
+    Plotly.newPlot('myDiv', data, layout);
+
+
+
 
 
 function init() {
